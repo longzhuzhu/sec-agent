@@ -1,0 +1,41 @@
+import type { Config } from "@opencode-ai/sdk"
+import type { SecAgentConfig } from "../config/schema/sec-agent-config"
+import { createBuiltinAgents } from "../agents/builtin-agents"
+import { getAgentDisplayName } from "../shared/agent-display-names"
+import { remapAgentKeysToDisplayNames } from "./agent-key-remapper"
+import { reorderAgentsByPriority } from "./agent-priority-order"
+
+export function createConfigHandler(deps: {
+  pluginConfig: SecAgentConfig
+  directory: string
+}) {
+  const { pluginConfig } = deps
+
+  return async (config: Config) => {
+    const currentModel = (config as any).model as string | undefined
+
+    const builtinAgents = createBuiltinAgents(
+      pluginConfig.disabled_agents,
+      pluginConfig.agents,
+      currentModel,
+    )
+
+    const existingAgents = config.agent ?? {}
+    const defaultAgentKey = pluginConfig.default_agent ?? "sec-agent"
+
+    // Set default agent
+    ;(config as any).default_agent = getAgentDisplayName(defaultAgentKey)
+
+    // Merge: builtin agents + existing config agents
+    let mergedAgents: Record<string, unknown> = {
+      ...builtinAgents,
+      ...existingAgents,
+    }
+
+    // Remap keys to display names and reorder
+    mergedAgents = remapAgentKeysToDisplayNames(mergedAgents)
+    mergedAgents = reorderAgentsByPriority(mergedAgents)
+
+    ;(config as any).agent = mergedAgents
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.sec-agent/reports/
+.sec-agent/plans/
+.omc/
+oh-my-openagent/
+*.tsbuildinfo

@@ -1,0 +1,40 @@
+/**
+ * Agent config keys → TAB display names mapping.
+ */
+export const AGENT_DISPLAY_NAMES: Record<string, string> = {
+  "sec-agent": "SecAgent (Orchestrator)",
+  "sec-design": "SecDesign (Security Architect)",
+  "sec-dev": "SecDev (Secure Coder)",
+  "sec-test": "SecTest (Security Tester)",
+  "sec-gate": "SecGate (Release Guardian)",
+}
+
+/**
+ * Get display name for an agent config key.
+ */
+export function getAgentDisplayName(configKey: string): string {
+  const exactMatch = AGENT_DISPLAY_NAMES[configKey]
+  if (exactMatch !== undefined) return exactMatch
+
+  const lowerKey = configKey.toLowerCase()
+  for (const [k, v] of Object.entries(AGENT_DISPLAY_NAMES)) {
+    if (k.toLowerCase() === lowerKey) return v
+  }
+
+  return configKey
+}
+
+const REVERSE_DISPLAY_NAMES: Record<string, string> = Object.fromEntries(
+  Object.entries(AGENT_DISPLAY_NAMES).map(([key, displayName]) => [displayName.toLowerCase(), key]),
+)
+
+/**
+ * Resolve an agent name (display name or config key) to its lowercase config key.
+ */
+export function getAgentConfigKey(agentName: string): string {
+  const lower = agentName.toLowerCase()
+  const reversed = REVERSE_DISPLAY_NAMES[lower]
+  if (reversed !== undefined) return reversed
+  if (AGENT_DISPLAY_NAMES[lower] !== undefined) return lower
+  return lower
+}
