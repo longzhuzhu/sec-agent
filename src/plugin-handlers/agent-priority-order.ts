@@ -1,14 +1,10 @@
 import { getAgentDisplayName } from "../shared/agent-display-names"
 
 /**
- * Core agent TAB ordering — agents appear in this order in the UI
+ * Core agent TAB ordering — only SecAgent is visible
  */
 const CORE_AGENT_ORDER = [
   getAgentDisplayName("sec-agent"),
-  getAgentDisplayName("sec-design"),
-  getAgentDisplayName("sec-dev"),
-  getAgentDisplayName("sec-test"),
-  getAgentDisplayName("sec-gate"),
 ] as const
 
 export function reorderAgentsByPriority(

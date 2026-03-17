@@ -8,6 +8,9 @@ import { createSecDevAgent } from "./sec-dev"
 import { createSecTestAgent } from "./sec-test"
 import { createSecGateAgent } from "./sec-gate"
 
+/** 子代理名称集合 — 这些 Agent 隐藏不显示为 TAB */
+const HIDDEN_AGENTS = new Set<string>(["sec-design", "sec-dev", "sec-test", "sec-gate"])
+
 const agentSources: Record<SecAgentName, AgentSource> = {
   "sec-agent": createSecAgentAgent,
   "sec-design": createSecDesignAgent,
@@ -38,6 +41,12 @@ export function createBuiltinAgents(
       }
       if (override.temperature !== undefined) config.temperature = override.temperature
       if (override.variant !== undefined) config.variant = override.variant
+    }
+
+    // 子代理设为隐藏 + subagent 模式，只有 SecAgent 显示为 TAB
+    if (HIDDEN_AGENTS.has(name)) {
+      ;(config as any).hidden = true
+      config.mode = "subagent"
     }
 
     result[name] = config
