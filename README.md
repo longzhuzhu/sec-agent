@@ -176,24 +176,57 @@
 
 ## 安装
 
+### 1. 克隆并构建
+
 ```bash
-# 克隆并构建
 git clone https://github.com/longzhuzhu/sec-agent.git
 cd sec-agent
 npm install
 npm run build
 ```
 
-在 OpenCode 配置中注册插件：
+### 2. 注册插件
+
+在 OpenCode 配置文件中添加插件路径：
 
 ```jsonc
 // ~/.config/opencode/opencode.jsonc
 {
   "plugin": [
-    "file:///path/to/sec-agent"
+    "file:///absolute/path/to/sec-agent"
   ]
 }
 ```
+
+> 将 `/absolute/path/to/sec-agent` 替换为你本地 `sec-agent` 目录的绝对路径，例如 `file:///Users/you/Code/sec-agent`。
+
+### 3. 重启 OpenCode
+
+插件会在启动时自动加载，注册 Agent、Command、Tool 和 Hook。
+
+### 4. 验证安装
+
+在 OpenCode 中输入以下命令验证：
+
+```
+/secagent 检查当前项目的安全风险
+/secdesign 分析这个模块的威胁模型
+```
+
+或切换到 **SecAgent** Tab 进行对话式安全分析。
+
+## 使用方式
+
+### 斜杠命令（快速触发）
+
+| 命令 | 说明 | 示例 |
+|------|------|------|
+| `/secagent <描述>` | 安全综合评估 — 并行调度全维度安全分析 | `/secagent 全面分析这个项目的安全风险` |
+| `/secdesign <描述>` | 安全设计评审 — STRIDE 威胁建模、攻击面分析、隐私合规 | `/secdesign 分析用户认证模块的威胁模型` |
+
+### Agent Tab（对话式）
+
+切换到 **SecAgent (Orchestrator)** Tab，直接用自然语言描述安全需求，编排器会自动识别意图并调度子代理。
 
 ## 安全工具
 
@@ -249,6 +282,7 @@ sec-agent/
 │   ├── create-tools.ts              # 4 个安全 Tool
 │   ├── create-managers.ts           # Manager 层
 │   ├── agents/                      # 5 个安全 Agent
+│   ├── commands/                    # 斜杠命令（/secagent, /secdesign）
 │   ├── hooks/                       # Hook 实现
 │   ├── features/builtin-skills/     # 7 个 SKILL.md
 │   ├── config/schema/               # Zod 配置 Schema

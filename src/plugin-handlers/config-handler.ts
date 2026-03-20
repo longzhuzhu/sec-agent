@@ -1,6 +1,7 @@
 import type { Config } from "@opencode-ai/sdk"
 import type { SecAgentConfig } from "../config/schema/sec-agent-config"
 import { createBuiltinAgents } from "../agents/builtin-agents"
+import { createBuiltinCommands } from "../commands"
 import { getAgentDisplayName } from "../shared/agent-display-names"
 import { remapAgentKeysToDisplayNames } from "./agent-key-remapper"
 import { reorderAgentsByPriority } from "./agent-priority-order"
@@ -37,5 +38,13 @@ export function createConfigHandler(deps: {
     mergedAgents = reorderAgentsByPriority(mergedAgents)
 
     ;(config as any).agent = mergedAgents
+
+    // 注册 commands（/secagent, /secdesign）
+    const existingCommands = ((config as any).command ?? {}) as Record<string, unknown>
+    const builtinCommands = createBuiltinCommands()
+    ;(config as any).command = {
+      ...existingCommands,
+      ...builtinCommands,
+    }
   }
 }
