@@ -22,12 +22,13 @@ export function createConfigHandler(deps: {
     )
 
     const existingAgents = config.agent ?? {}
-    const defaultAgentKey = pluginConfig.default_agent ?? "sec-agent"
 
-    // Set default agent
-    ;(config as any).default_agent = getAgentDisplayName(defaultAgentKey)
+    // 仅在用户显式配置了 default_agent 时才覆盖
+    if (pluginConfig.default_agent) {
+      ;(config as any).default_agent = getAgentDisplayName(pluginConfig.default_agent)
+    }
 
-    // Merge: builtin agents + existing config agents
+    // Merge: existing config agents 优先，保留用户原有配置
     let mergedAgents: Record<string, unknown> = {
       ...builtinAgents,
       ...existingAgents,
