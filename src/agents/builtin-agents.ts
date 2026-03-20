@@ -32,6 +32,8 @@ export function createBuiltinAgents(
     if (disabledSet.has(name.toLowerCase())) continue
 
     const config = buildAgent(source, model)
+    // model 为空时移除，让 OpenCode 使用默认模型
+    if (!config.model) delete config.model
     const override = agentOverrides[name as SecAgentName]
 
     if (override) {
